@@ -7,106 +7,662 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="stylesheet" href="/src/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --secondary: #64748b;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --border-radius: 0.75rem;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --transition: all 0.2s ease-in-out;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .editor-container {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .col-12 { grid-column: span 12; }
+        .col-8 { grid-column: span 8; }
+        .col-4 { grid-column: span 4; }
+
+        .form-section {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-section-title {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        input[type="text"],
+        .editor-toolbar {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .editor-toolbar {
+            display: flex;
+            gap: 0.5rem;
+            background: #f8fafc;
+            border-bottom: none;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            padding: 0.5rem;
+        }
+
+        .editor-content {
+            min-height: 200px;
+            border: 2px solid #e2e8f0;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .tag-system {
+            margin-bottom: 1.5rem;
+        }
+
+        .tags-input {
+            padding: 0.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            background: var(--primary-light);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .tag span {
+            cursor: pointer;
+            font-size: 1.25rem;
+            line-height: 1;
+        }
+
+        .tag:hover {
+            background: var(--primary);
+        }
+
+        #tagInput {
+            border: none;
+            outline: none;
+            flex: 1;
+            min-width: 120px;
+            padding: 0.25rem;
+        }
+
+        .entries-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .entry-item {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            position: relative;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            height: 100%;
+        }
+
+        .entry-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        .entry-item h3 {
+            margin: 0;
+            color: var(--text);
+            font-size: 1.25rem;
+            padding-right: 3rem;
+        }
+
+        .entry-content {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .entry-content img,
+        .entry-content svg {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            margin: 0.5rem 0;
+        }
+
+        .entry-meta {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            border-top: 1px solid #e2e8f0;
+            padding-top: 1rem;
+            margin-top: auto;
+        }
+
+        .entry-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+
+        .entry-tags .tag {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            background: var(--primary-light);
+            color: white;
+            border-radius: 9999px;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .delete-btn:hover {
+            background: #dc2626;
+        }
+
+        .entry-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+        }
+
+        .entry-image-container {
+            display: inline-block;
+        }
+
+        #jsonOutput {
+            background: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        .action-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-button:hover {
+            background: var(--primary-light);
+            transform: translateY(-1px);
+        }
+
+        .toastify {
+            font-family: 'Inter', system-ui;
+            border-radius: var(--border-radius);
+            font-size: 0.875rem;
+            padding: 1rem 1.5rem;
+        }
+
+        .toastify.success {
+            background: var(--success);
+        }
+
+        .toastify.error {
+            background: var(--danger);
+        }
+
+        .toastify.info {
+            background: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .editor-container {
+                padding: 1rem;
+            }
+
+            .editor-toolbar {
+                flex-wrap: wrap;
+            }
+
+            .editor-toolbar button {
+                flex: 1;
+                min-width: calc(33.333% - 0.5rem);
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1>📚 Crea Mini DB</h1>
-            <p>Tu editor de texto avanzado con sistema de etiquetas</p>
-        </div>
-    </header>
-
-    <main>
+    <div class="container">
         <div class="editor-container">
-            <!-- Buscador -->
-            <div>
-                <input 
-                    type="text" 
-                    id="searchInput" 
-                    placeholder="Buscar por etiquetas o título..." 
-                    class="input"
-                >
-            </div>
+            <h1>📚 Crea Mini DB</h1>
+            
+            <div class="form-grid">
+                <div class="col-8">
+                    <div class="form-section">
+                        <div class="form-section-title">✏️ Entrada</div>
+                        <div class="input-group">
+                            <input type="text" id="entryTitle" placeholder="Título de la entrada">
+                        </div>
 
-            <!-- Sistema de etiquetas -->
-            <div>
-                <div id="tagsContainer" class="tags-input">
-                    <div id="tagsList"></div>
-                    <input 
-                        type="text" 
-                        id="tagInput" 
-                        placeholder="Añadir etiquetas (Enter o coma)" 
-                        onkeydown="handleTagInput(event)"
-                    >
+                        <div class="editor-toolbar">
+                            <button onclick="formatText('bold')" title="Negrita"><strong>B</strong></button>
+                            <button onclick="formatText('italic')" title="Cursiva"><em>I</em></button>
+                            <button onclick="formatText('underline')" title="Subrayado"><u>U</u></button>
+                            <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                            <button onclick="document.getElementById('imageUpload').click()" title="Subir imagen">📷 Imagen</button>
+                        </div>
+
+                        <div 
+                            class="editor-content"
+                            contenteditable="true"
+                            id="richTextArea"
+                            placeholder="✍️ Escribe tu contenido aquí..."
+                        ></div>
+
+                        <button onclick="saveEntry()" class="action-button">💾 Guardar Entrada</button>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="form-section">
+                        <div class="form-section-title">🏷️ Etiquetas</div>
+                        <div class="input-group">
+                            <input type="text" id="searchInput" placeholder="🔍 Buscar por etiquetas...">
+                        </div>
+                        
+                        <div class="tag-system">
+                            <div class="tags-input" id="tagsContainer">
+                                <div id="tagsList"></div>
+                                <input 
+                                    type="text" 
+                                    id="tagInput" 
+                                    placeholder="+ Añadir etiquetas..."
+                                    onkeydown="handleTagInput(event)"
+                                >
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            
+            <div class="form-section">
+                <div class="form-section-title">📂 Entradas Guardadas</div>
+                <div class="entries-grid" id="entriesList"></div>
 
-            <!-- Editor -->
-            <div>
-                <div>
-                    <input 
-                        type="text" 
-                        id="entryTitle" 
-                        placeholder="Título de la entrada" 
-                        class="input"
-                    >
-                </div>
-
-                <!-- Barra de herramientas -->
-                <div class="toolbar">
-                    <button onclick="formatText('bold')" class="btn">
-                        <strong>B</strong>
-                    </button>
-                    <button onclick="formatText('italic')" class="btn">
-                        <em>I</em>
-                    </button>
-                    <button onclick="formatText('underline')" class="btn">
-                        <u>U</u>
-                    </button>
-                    <input type="file" id="imageUpload" accept="image/*" hidden>
-                    <button onclick="document.getElementById('imageUpload').click()" class="btn">
-                        📷 Imagen
-                    </button>
-                </div>
-
-                <!-- Área de texto -->
-                <div 
-                    id="richTextArea"
-                    contenteditable="true"
-                    class="editor"
-                    placeholder="Escribe tu contenido aquí..."
-                ></div>
-
-                <!-- Botones de acción -->
-                <div class="toolbar">
-                    <button onclick="saveEntry()" class="btn primary">
-                        💾 Guardar
-                    </button>
-                    <button onclick="clearEditor()" class="btn">
-                        🗑️ Limpiar
-                    </button>
-                    <button onclick="downloadJSON()" class="btn">
-                        ⬇️ Exportar JSON
-                    </button>
+                <div class="export-section">
+                    <button onclick="downloadJSON()" class="action-button">⬇️ Exportar JSON</button>
+                    <pre id="jsonOutput"></pre>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Lista de entradas -->
-        <div id="entriesList" class="entries-list"></div>
-    </main>
+<script>
+let database = JSON.parse(localStorage.getItem('advancedEditorDB') || '[]');
+let currentTags = [];
 
-    <footer>
-        <div class="container">
-            <p>
-                Sígueme en Instagram 
-                <a href="https://instagram.com/cuenta.01234" target="_blank">
-                    @cuenta.01234
-                </a>
-            </p>
+// Función para mostrar notificaciones toast
+function showToast(message, type = 'info') {
+    Toastify({
+        text: message,
+        duration: 3000,
+        gravity: "bottom",
+        position: "right",
+        className: type,
+        stopOnFocus: true,
+        style: {
+            background: "linear-gradient(to right, var(--primary), var(--secondary))",
+            boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
+            borderRadius: "8px",
+            fontSize: "14px",
+            padding: "12px 20px"
+        }
+    }).showToast();
+}
+
+function handleTagInput(event) {
+    const input = event.target;
+    const value = input.value.trim();
+    
+    if ((event.key === 'Enter' || event.key === ',') && value) {
+        event.preventDefault();
+        const tag = value.replace(',', '');
+        if (!currentTags.includes(tag)) {
+            currentTags.push(tag);
+            updateTagDisplay();
+            input.value = '';
+            showToast('Etiqueta añadida', 'success');
+        } else {
+            showToast('Esta etiqueta ya existe', 'info');
+        }
+    }
+}
+
+function removeTag(tag) {
+    currentTags = currentTags.filter(t => t !== tag);
+    updateTagDisplay();
+    showToast('Etiqueta eliminada', 'info');
+}
+
+function updateTagDisplay() {
+    const tagsList = document.getElementById('tagsList');
+    tagsList.innerHTML = currentTags.map(tag => `
+        <div class="tag">
+            ${tag}
+            <span onclick="removeTag('${tag}')">&times;</span>
         </div>
-    </footer>
+    `).join('');
+}
 
-    <script type="module" src="/main.js"></script>
+function formatText(command) {
+    document.execCommand(command, false);
+    document.getElementById('richTextArea').focus();
+}
+
+// Función para manejar la subida de imágenes
+function handleImageUpload(file) {
+    if (!file) {
+        console.error('No se proporcionó ningún archivo');
+        return;
+    }
+    
+    console.log('Tipo de archivo:', file.type);
+    
+    // Validar que sea una imagen o SVG
+    if (!file.type.startsWith('image/') && file.type !== 'image/svg+xml') {
+        showToast('Por favor, selecciona una imagen válida', 'error');
+        return;
+    }
+
+    const reader = new FileReader();
+    
+    reader.onerror = function(error) {
+        console.error('Error al leer el archivo:', error);
+        showToast('Error al procesar el archivo', 'error');
+    };
+
+    reader.onload = function(e) {
+        try {
+            if (file.type === 'image/svg+xml') {
+                console.log('Procesando SVG...');
+                const svgContent = e.target.result;
+                
+                // Crear un contenedor para el SVG
+                const container = document.createElement('div');
+                container.className = 'entry-image-container';
+                container.style.display = 'inline-block';
+                
+                // Insertar el SVG como HTML
+                container.innerHTML = svgContent;
+                
+                // Asegurarse de que el SVG tenga las clases y estilos correctos
+                const svgElement = container.querySelector('svg');
+                if (svgElement) {
+                    svgElement.className = 'entry-image';
+                    svgElement.style.maxWidth = '100%';
+                    svgElement.style.height = 'auto';
+                    
+                    // Insertar el contenedor en el editor
+                    const editor = document.getElementById('richTextArea');
+                    editor.appendChild(container);
+                    console.log('SVG insertado correctamente');
+                } else {
+                    console.error('No se encontró el elemento SVG en el contenido');
+                    showToast('Error al procesar el SVG', 'error');
+                }
+            } else {
+                console.log('Procesando imagen normal...');
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'entry-image';
+                img.alt = file.name;
+                document.getElementById('richTextArea').appendChild(img);
+            }
+            showToast('Imagen subida correctamente', 'success');
+        } catch (error) {
+            console.error('Error al procesar la imagen:', error);
+            showToast('Error al procesar la imagen', 'error');
+        }
+    };
+
+    try {
+        if (file.type === 'image/svg+xml') {
+            reader.readAsText(file);
+        } else {
+            reader.readAsDataURL(file);
+        }
+    } catch (error) {
+        console.error('Error al iniciar la lectura del archivo:', error);
+        showToast('Error al leer el archivo', 'error');
+    }
+}
+
+// Event listener para la subida de imágenes
+document.getElementById('imageUpload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        handleImageUpload(file);
+        this.value = ''; // Resetear el input
+    }
+});
+
+function saveEntry() {
+    // 1. Obtener los datos del formulario
+    const title = document.getElementById('entryTitle').value.trim();
+    const content = document.getElementById('richTextArea').innerHTML;
+    const plainContent = content.replace(/<\/?[^>]+(>|$)/g, "").trim();
+    
+    // 2. Validaciones
+    let isValid = true;
+    
+    if (!title) {
+        showToast('El título es requerido', 'error');
+        isValid = false;
+    }
+    
+    if (!plainContent && !content.includes('img') && !content.includes('svg')) {
+        showToast('El contenido es requerido', 'error');
+        isValid = false;
+    }
+    
+    if (!isValid) return;
+
+    // 3. Preparar los datos
+    const newEntry = {
+        id: Date.now(),
+        title: title,
+        content: content,
+        tags: [...currentTags],
+        timestamp: new Date().toISOString(),
+        lastModified: new Date().toISOString()
+    };
+
+    try {
+        // 4. Guardar en la base de datos
+        database.push(newEntry);
+        localStorage.setItem('advancedEditorDB', JSON.stringify(database));
+        
+        // 5. Actualizar la UI
+        updateUI();
+        clearEditor();
+        
+        // 6. Notificar éxito
+        showToast(`Entrada "${title}" guardada correctamente`, 'success');
+        
+    } catch (error) {
+        console.error('Error al guardar:', error);
+        showToast('Error al guardar la entrada. Por favor, inténtalo de nuevo.', 'error');
+    }
+}
+
+function clearEditor() {
+    document.getElementById('entryTitle').value = '';
+    document.getElementById('richTextArea').innerHTML = '';
+    currentTags = [];
+    updateTagDisplay();
+}
+
+function updateUI() {
+    const entriesList = document.getElementById('entriesList');
+    const jsonOutput = document.getElementById('jsonOutput');
+    if (!entriesList) return;
+
+    // Ordenar entradas por fecha, más recientes primero
+    const sortedEntries = [...database].sort((a, b) => 
+        new Date(b.timestamp) - new Date(a.timestamp)
+    );
+
+    // Actualizar la lista de entradas
+    entriesList.innerHTML = sortedEntries.map(entry => `
+        <div class="entry-item">
+            <button class="delete-btn" onclick="deleteEntry(${entry.id})">🗑 Eliminar</button>
+            <h3>${entry.title}</h3>
+            <div class="entry-content">${entry.content}</div>
+            <div class="entry-tags">
+                ${(entry.tags || []).map(tag => `<span class="tag">${tag}</span>`).join('')}
+            </div>
+            <div class="entry-meta">
+                <div>📅 Creado: ${new Date(entry.timestamp).toLocaleString()}</div>
+                ${entry.lastModified ? `
+                    <div>🔄 Última modificación: ${new Date(entry.lastModified).toLocaleString()}</div>
+                ` : ''}
+            </div>
+        </div>
+    `).join('');
+
+    // Actualizar la visualización del JSON
+    if (jsonOutput) {
+        jsonOutput.textContent = JSON.stringify(database, null, 2);
+    }
+}
+
+function deleteEntry(id) {
+    database = database.filter(entry => entry.id !== id);
+    updateUI();
+    showToast('Entrada eliminada', 'info');
+}
+
+function downloadJSON() {
+    const dataStr = JSON.stringify(database, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `editor-database_${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast('Base de datos exportada correctamente', 'success');
+}
+
+// Inicialización
+updateUI();
+document.getElementById('richTextArea').addEventListener('paste', function(e) {
+    e.preventDefault();
+    const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+    document.execCommand('insertHTML', false, text);
+});
+</script>
+
 </body>
 </html>
