@@ -22,7 +22,10 @@
             
             <div class="floating-controls">
                 <button onclick="openCreateModal()" class="btn btn--primary">✨ Crear Entrada</button>
-                <input type="text" id="searchInput" placeholder="Buscar por título, contenido o etiquetas...">
+                <div class="search-wrapper">
+                    <input type="text" id="searchInput" placeholder="Buscar por título, contenido o etiquetas...">
+                    <button class="search-clear" onclick="clearSearch()" style="display: none;">×</button>
+                </div>
                 <button onclick="downloadJSON()" class="btn btn--success">📥 Exportar JSON</button>
             </div>
             

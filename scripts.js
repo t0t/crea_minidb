@@ -326,6 +326,21 @@ function formatDate(date) {
     return `${day}/${month}`;
 }
 
+// Función para mostrar/ocultar el botón de limpiar búsqueda
+function toggleSearchClear() {
+    const searchInput = document.getElementById('searchInput');
+    const clearButton = document.querySelector('.search-clear');
+    clearButton.style.display = searchInput.value ? 'block' : 'none';
+}
+
+// Función para limpiar la búsqueda
+function clearSearch() {
+    const searchInput = document.getElementById('searchInput');
+    searchInput.value = '';
+    toggleSearchClear();
+    renderEntries();
+}
+
 // Event Listeners
 document.addEventListener('DOMContentLoaded', function() {
     // Comprobar soporte de características
@@ -374,8 +389,15 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('saveEntryBtn').addEventListener('click', createEntry);
 
     // Event listener para el input de búsqueda
-    document.getElementById('searchInput').addEventListener('input', function(e) {
-        searchQuery = e.target.value;
+    const searchInput = document.getElementById('searchInput');
+    
+    // Escuchar cambios en el input de búsqueda
+    searchInput.addEventListener('input', function() {
+        toggleSearchClear();
+        searchQuery = searchInput.value;
         renderEntries();
     });
+
+    // Event listener para limpiar la búsqueda
+    document.querySelector('.search-clear').addEventListener('click', clearSearch);
 });
