@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crea Mini DB</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>📚 Crea Mini DB</h1>
+            <p>Tu editor de texto avanzado con sistema de etiquetas</p>
+        </div>
+    </header>
+
+    <main>
+        <div class="editor-container">
+            <!-- Buscador -->
+            <div>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Buscar por etiquetas o título..." 
+                    class="input"
+                >
+            </div>
+
+            <!-- Sistema de etiquetas -->
+            <div>
+                <div id="tagsContainer" class="tags-input">
+                    <div id="tagsList"></div>
+                    <input 
+                        type="text" 
+                        id="tagInput" 
+                        placeholder="Añadir etiquetas (Enter o coma)" 
+                        onkeydown="handleTagInput(event)"
+                    >
+                </div>
+            </div>
+
+            <!-- Editor -->
+            <div>
+                <div>
+                    <input 
+                        type="text" 
+                        id="entryTitle" 
+                        placeholder="Título de la entrada" 
+                        class="input"
+                    >
+                </div>
+
+                <!-- Barra de herramientas -->
+                <div class="toolbar">
+                    <button onclick="formatText('bold')" class="btn">
+                        <strong>B</strong>
+                    </button>
+                    <button onclick="formatText('italic')" class="btn">
+                        <em>I</em>
+                    </button>
+                    <button onclick="formatText('underline')" class="btn">
+                        <u>U</u>
+                    </button>
+                    <input type="file" id="imageUpload" accept="image/*" hidden>
+                    <button onclick="document.getElementById('imageUpload').click()" class="btn">
+                        📷 Imagen
+                    </button>
+                </div>
+
+                <!-- Área de texto -->
+                <div 
+                    id="richTextArea"
+                    contenteditable="true"
+                    class="editor"
+                    placeholder="Escribe tu contenido aquí..."
+                ></div>
+
+                <!-- Botones de acción -->
+                <div class="toolbar">
+                    <button onclick="saveEntry()" class="btn primary">
+                        💾 Guardar
+                    </button>
+                    <button onclick="clearEditor()" class="btn">
+                        🗑️ Limpiar
+                    </button>
+                    <button onclick="downloadJSON()" class="btn">
+                        ⬇️ Exportar JSON
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de entradas -->
+        <div id="entriesList" class="entries-list"></div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>
+                Sígueme en Instagram 
+                <a href="https://instagram.com/cuenta.01234" target="_blank">
+                    @cuenta.01234
+                </a>
+            </p>
+        </div>
+    </footer>
+
+    <script type="module" src="/main.js"></script>
+</body>
+</html>
