@@ -2,6 +2,8 @@
 
 Una mini base de datos local para crear y gestionar entradas con texto enriquecido, imágenes y etiquetas.
 
+![Captura de pantalla de Crea Mini DB](public/screenshot.png)
+
 ## 🌟 Características
 
 - **Editor de Texto Enriquecido**

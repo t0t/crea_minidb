@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
+
 /* Resetear estilos por defecto */
 *, *::before, *::after {
     box-sizing: border-box;
@@ -6,8 +8,6 @@
 }
 
 /* Fuentes */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
-
 @font-face {
     font-family: 'SoDo Sans';
     src: url('fonts/SoDoSans-Regular.woff2') format('woff2'),
@@ -338,21 +338,11 @@ input[type="text"],
     pointer-events: none;
 }
 
-/* Botones y Acciones */
-.floating-controls {
-    /* position: fixed;
-    top: 0;
-    right: 0; */
-    display: flex;
-    flex-direction: row;
+/* Botones - Sistema unificado */
+.btn {
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-    gap: 4rem;
-    z-index: 100;
-    margin: 4.5rem 0;
-}
-
-.create-entry-btn,
-.export-btn {
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
     border: none;
@@ -363,26 +353,91 @@ input[type="text"],
     backdrop-filter: blur(10px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     white-space: nowrap;
+    gap: 0.5rem;
+    font-weight: 500;
 }
 
-.create-entry-btn {
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+/* Variantes de botones */
+.btn--primary {
     background: var(--primary);
     color: white;
 }
 
-.create-entry-btn:hover {
+.btn--primary:hover {
     background: var(--primary-dark);
-    transform: translateY(-2px);
 }
 
-.export-btn {
+.btn--success {
     background: #2ed573;
     color: white;
 }
 
-.export-btn:hover {
+.btn--success:hover {
     background: #28bd66;
-    transform: translateY(-2px);
+}
+
+.btn--danger {
+    background: #ff4757;
+    color: white;
+}
+
+.btn--danger:hover {
+    background: #e0404e;
+}
+
+.btn--secondary {
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--text);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.btn--secondary:hover {
+    background: rgba(255, 255, 255, 1);
+}
+
+/* Tamaños de botones */
+.btn--small {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+.btn--large {
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+}
+
+/* Botones en grupo */
+.btn-group {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Layout de controles flotantes */
+.floating-controls {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 4rem;
+    z-index: 100;
+    margin: 4.5rem 0;
+}
+
+/* Limpiar estilos antiguos */
+.create-entry-btn,
+.export-btn,
+.edit-btn,
+.delete-btn,
+.action-button {
+    display: none; /* Para asegurarnos de que no se usan */
 }
 
 #searchInput {

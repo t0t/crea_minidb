@@ -21,9 +21,9 @@
             </div>
             
             <div class="floating-controls">
-                <button onclick="openCreateModal()" class="create-entry-btn">✨ Crear Entrada</button>
+                <button onclick="openCreateModal()" class="btn btn--primary">✨ Crear Entrada</button>
                 <input type="text" id="searchInput" placeholder="Buscar por título, contenido o etiquetas...">
-                <button onclick="downloadJSON()" class="export-btn">📥 Exportar JSON</button>
+                <button onclick="downloadJSON()" class="btn btn--success">📥 Exportar JSON</button>
             </div>
             
             <div class="form-section">
@@ -60,7 +60,7 @@
         <div class="modal">
             <div class="modal-header">
                 <h2 id="modalTitle">✨ Crear Nueva Entrada</h2>
-                <button onclick="closeModal()" class="modal-close" title="Cerrar">×</button>
+                <button onclick="closeModal()" class="btn btn--small modal-close" title="Cerrar">×</button>
             </div>
             <div class="modal-body">
                 <form class="editor-form" onsubmit="return false;">
@@ -101,8 +101,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button onclick="closeModal()" class="action-button secondary">❌ Cancelar</button>
-                <button onclick="saveEntry()" class="action-button">💾 Guardar Entrada</button>
+                <button onclick="closeModal()" class="btn btn--secondary">❌ Cancelar</button>
+                <button onclick="saveEntry()" class="btn btn--primary">💾 Guardar Entrada</button>
             </div>
         </div>
     </div>
@@ -509,7 +509,7 @@ function updateUI(filterQuery = searchQuery) {
         entriesList.innerHTML = `
             <div class="no-results">
                 <p>No se encontraron entradas que coincidan con "${filterQuery}"</p>
-                <button onclick="clearSearch()" class="action-button">❌ Limpiar búsqueda</button>
+                <button onclick="clearSearch()" class="btn btn--secondary">❌ Limpiar búsqueda</button>
             </div>
         `;
         return;
@@ -537,8 +537,8 @@ function updateUI(filterQuery = searchQuery) {
                 ` : ''}
             </div>
             <div class="entry-actions">
-                <button class="edit-btn" onclick="editEntry(${entry.id})" title="Editar entrada">✏️ Editar</button>
-                <button class="delete-btn" onclick="deleteEntry(${entry.id})" title="Eliminar entrada">🗑 Eliminar</button>
+                <button class="btn btn--secondary btn--small" onclick="editEntry(${entry.id})" title="Editar entrada">✏️ Editar</button>
+                <button class="btn btn--danger btn--small" onclick="deleteEntry(${entry.id})" title="Eliminar entrada">🗑 Eliminar</button>
             </div>
         </div>
     `).join('');
