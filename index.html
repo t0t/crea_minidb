@@ -327,6 +327,61 @@
                 min-width: calc(33.333% - 0.5rem);
             }
         }
+
+        .highlight-match mark {
+            background-color: #fef08a;
+            padding: 0.1em 0.2em;
+            border-radius: 0.2em;
+        }
+
+        .tag.highlight {
+            background-color: var(--primary);
+            animation: pulse 1s;
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 2rem;
+            background: #f8fafc;
+            border-radius: var(--border-radius);
+            border: 1px dashed #e2e8f0;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .info-section {
+            background-color: #f0f9ff;
+            border-left: 4px solid var(--primary);
+            margin-top: 1.5rem;
+        }
+
+        .info-section p {
+            margin: 0 0 1rem 0;
+            line-height: 1.5;
+        }
+
+        .info-section p:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-section ul {
+            margin: 0 0 1rem 1.5rem;
+            padding: 0;
+        }
+
+        .info-section li {
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .info-section li:last-child {
+            margin-bottom: 0;
+        }
     </style>
 </head>
 <body>
@@ -380,6 +435,15 @@
                             </div>
                         </div>
                     </div>
+                    <div class="form-section info-section">
+                        <p>📝 Esta mini base de datos se almacena localmente en tu navegador y persistirá indefinidamente hasta que:</p>
+                        <ul>
+                            <li>Borres los datos del navegador</li>
+                            <li>Uses el modo incógnito (se borrarán al cerrar la ventana)</li>
+                            <li>Se alcance el límite de almacenamiento (5-10 MB)</li>
+                        </ul>
+                        <p>💾 Usa el botón "Exportar JSON" para hacer una copia de seguridad de tus datos.</p>
+                    </div>
                 </div>
             </div>
             
@@ -398,6 +462,7 @@
 <script>
 let database = JSON.parse(localStorage.getItem('advancedEditorDB') || '[]');
 let currentTags = [];
+let searchQuery = '';
 
 // Función para mostrar notificaciones toast
 function showToast(message, type = 'info') {
@@ -600,7 +665,34 @@ function clearEditor() {
     updateTagDisplay();
 }
 
-function updateUI() {
+function filterEntries(entries, query) {
+    if (!query) return entries;
+    
+    query = query.toLowerCase();
+    return entries.filter(entry => {
+        // Buscar en tags
+        const hasTags = entry.tags && entry.tags.some(tag => 
+            tag.toLowerCase().includes(query)
+        );
+        
+        // Buscar en título
+        const hasTitle = entry.title.toLowerCase().includes(query);
+        
+        // Buscar en contenido (excluyendo HTML tags)
+        const plainContent = entry.content.replace(/<[^>]+>/g, '');
+        const hasContent = plainContent.toLowerCase().includes(query);
+        
+        return hasTags || hasTitle || hasContent;
+    });
+}
+
+function highlightMatches(text, query) {
+    if (!query) return text;
+    const regex = new RegExp(`(${query})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
+}
+
+function updateUI(filterQuery = searchQuery) {
     const entriesList = document.getElementById('entriesList');
     const jsonOutput = document.getElementById('jsonOutput');
     if (!entriesList) return;
@@ -610,14 +702,34 @@ function updateUI() {
         new Date(b.timestamp) - new Date(a.timestamp)
     );
 
+    // Filtrar entradas
+    const filteredEntries = filterEntries(sortedEntries, filterQuery);
+
+    // Mostrar mensaje si no hay resultados
+    if (filteredEntries.length === 0 && filterQuery) {
+        entriesList.innerHTML = `
+            <div class="no-results">
+                <p>No se encontraron entradas que coincidan con "${filterQuery}"</p>
+                <button onclick="clearSearch()" class="action-button">❌ Limpiar búsqueda</button>
+            </div>
+        `;
+        return;
+    }
+
     // Actualizar la lista de entradas
-    entriesList.innerHTML = sortedEntries.map(entry => `
-        <div class="entry-item">
+    entriesList.innerHTML = filteredEntries.map(entry => `
+        <div class="entry-item ${filterQuery ? 'highlight-match' : ''}">
             <button class="delete-btn" onclick="deleteEntry(${entry.id})">🗑 Eliminar</button>
-            <h3>${entry.title}</h3>
-            <div class="entry-content">${entry.content}</div>
+            <h3>${filterQuery ? highlightMatches(entry.title, filterQuery) : entry.title}</h3>
+            <div class="entry-content">
+                ${entry.content}
+            </div>
             <div class="entry-tags">
-                ${(entry.tags || []).map(tag => `<span class="tag">${tag}</span>`).join('')}
+                ${(entry.tags || []).map(tag => `
+                    <span class="tag ${filterQuery && tag.toLowerCase().includes(filterQuery.toLowerCase()) ? 'highlight' : ''}">
+                        ${filterQuery ? highlightMatches(tag, filterQuery) : tag}
+                    </span>
+                `).join('')}
             </div>
             <div class="entry-meta">
                 <div>📅 Creado: ${new Date(entry.timestamp).toLocaleString()}</div>
@@ -633,6 +745,19 @@ function updateUI() {
         jsonOutput.textContent = JSON.stringify(database, null, 2);
     }
 }
+
+function clearSearch() {
+    const searchInput = document.getElementById('searchInput');
+    searchInput.value = '';
+    searchQuery = '';
+    updateUI();
+}
+
+// Event listener para el buscador
+document.getElementById('searchInput').addEventListener('input', function(e) {
+    searchQuery = e.target.value.trim();
+    updateUI();
+});
 
 function deleteEntry(id) {
     database = database.filter(entry => entry.id !== id);
